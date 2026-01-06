@@ -1,8 +1,24 @@
-export * from './client';
+// Client
+export { supabase, createServerClient } from './client';
+export type { SupabaseClient } from './client';
+
+// Auth
 export * from './auth';
+
+// Users
 export * from './users';
-export * from './drivers';
+
+// Orders
 export * from './orders';
+
+// Drivers
+export * from './drivers';
+
+// Photos
 export * from './photos';
+
+// Payments
 export * from './payments';
+
+// Realtime
 export * from './realtime';

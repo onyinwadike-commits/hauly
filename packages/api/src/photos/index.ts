@@ -40,7 +40,7 @@ export async function uploadOrderPhoto(
       public_url: urlData.publicUrl,
       location: location ? `POINT(${location.longitude} ${location.latitude})` : null,
       captured_at: new Date().toISOString()
-    })
+    } as any)
     .select()
     .single();
 
@@ -83,11 +83,12 @@ export async function deletePhoto(photoId: string): Promise<void> {
     .single();
 
   if (fetchError) throw fetchError;
+  const photoData = photo as { storage_path: string };
 
   // Delete from storage
   const { error: storageError } = await supabase.storage
     .from('order-photos')
-    .remove([photo.storage_path]);
+    .remove([photoData.storage_path]);
 
   if (storageError) throw storageError;
 

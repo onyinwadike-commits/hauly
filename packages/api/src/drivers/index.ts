@@ -1,5 +1,17 @@
 import { supabase } from '../client';
-import type { DriverProfile, VehicleType } from '@hauly/types';
+import type { DriverProfile, VehicleType, Order, DriverTier } from '@hauly/types';
+
+export interface NearbyDriver {
+  driver_id: string;
+  user_id: string;
+  full_name: string;
+  vehicle_type: VehicleType;
+  vehicle_make: string;
+  vehicle_model: string;
+  rating: number;
+  tier: DriverTier;
+  distance_miles: number;
+}
 
 export async function getDriverProfile(): Promise<DriverProfile | null> {
   const { data: { user } } = await supabase.auth.getUser();
@@ -12,15 +24,15 @@ export async function getDriverProfile(): Promise<DriverProfile | null> {
     .single();
 
   if (error && error.code !== 'PGRST116') throw error;
-  return data;
+  return data as DriverProfile | null;
 }
 
 export async function updateDriverLocation(latitude: number, longitude: number) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Not authenticated');
 
-  const { error } = await supabase
-    .from('driver_profiles')
+  const { error } = await (supabase
+    .from('driver_profiles') as any)
     .update({
       current_location: `POINT(${longitude} ${latitude})`,
       last_location_update: new Date().toISOString()
@@ -34,8 +46,8 @@ export async function setOnlineStatus(isOnline: boolean) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Not authenticated');
 
-  const { error } = await supabase
-    .from('driver_profiles')
+  const { error } = await (supabase
+    .from('driver_profiles') as any)
     .update({ is_online: isOnline })
     .eq('user_id', user.id);
 
@@ -46,7 +58,7 @@ export async function getAvailableJobs(
   latitude: number,
   longitude: number,
   radiusMiles: number = 10
-) {
+): Promise<Order[]> {
   const { data, error } = await supabase
     .from('orders')
     .select('*')
@@ -57,27 +69,27 @@ export async function getAvailableJobs(
   // In production, use PostGIS ST_DWithin
 
   if (error) throw error;
-  return data;
+  return data as Order[];
 }
 
-export async function acceptJob(orderId: string) {
+export async function acceptJob(orderId: string): Promise<Order> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Not authenticated');
 
-  const { data, error } = await supabase
-    .from('orders')
+  const { data, error } = await (supabase
+    .from('orders') as any)
     .update({
       driver_id: user.id,
       status: 'accepted',
       accepted_at: new Date().toISOString()
     })
     .eq('id', orderId)
-    .eq('status', 'requested') // Only accept if still available
+    .eq('status', 'requested')
     .select()
     .single();
 
   if (error) throw error;
-  return data;
+  return data as Order;
 }
 
 export async function findNearbyDrivers(
@@ -85,8 +97,8 @@ export async function findNearbyDrivers(
   longitude: number,
   radiusMiles: number = 10,
   vehicleType?: VehicleType
-) {
-  const { data, error } = await supabase.rpc('find_nearby_drivers', {
+): Promise<NearbyDriver[]> {
+  const { data, error } = await (supabase.rpc as any)('find_nearby_drivers', {
     p_pickup_lat: latitude,
     p_pickup_lng: longitude,
     p_radius_miles: radiusMiles,
@@ -94,5 +106,5 @@ export async function findNearbyDrivers(
   });
 
   if (error) throw error;
-  return data;
+  return data as NearbyDriver[];
 }

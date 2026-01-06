@@ -1,20 +1,28 @@
 import { supabase } from '../client';
-import type { Order, CreateOrderInput, OrderStatus, LoadSize, PRICING } from '@hauly/types';
+import type { Order, CreateOrderInput, OrderStatus, LoadSize } from '@hauly/types';
+
+interface PricingResult {
+  base_price_cents: number;
+  platform_fee_cents: number;
+  driver_payout_cents: number;
+  total_cents: number;
+}
 
 export async function createOrder(input: CreateOrderInput): Promise<Order> {
   // Calculate pricing
-  const { data: pricing } = await supabase.rpc('calculate_pricing', {
+  const { data: pricing } = await (supabase.rpc as any)('calculate_pricing', {
     p_load_size: input.load_size,
     p_estimated_hours: input.estimated_hours
   }).single();
 
   if (!pricing) throw new Error('Failed to calculate pricing');
+  const pricingData = pricing as PricingResult;
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('Not authenticated');
 
-  const { data, error } = await supabase
-    .from('orders')
+  const { data, error } = await (supabase
+    .from('orders') as any)
     .insert({
       customer_id: user.id,
       service_type: input.service_type,
@@ -34,10 +42,10 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
       customer_notes: input.customer_notes,
       item_description: input.item_description,
       estimated_hours: input.estimated_hours,
-      base_price_cents: pricing.base_price_cents,
-      platform_fee_cents: pricing.platform_fee_cents,
-      driver_payout_cents: pricing.driver_payout_cents,
-      total_cents: pricing.total_cents
+      base_price_cents: pricingData.base_price_cents,
+      platform_fee_cents: pricingData.platform_fee_cents,
+      driver_payout_cents: pricingData.driver_payout_cents,
+      total_cents: pricingData.total_cents
     })
     .select()
     .single();
@@ -78,13 +86,13 @@ export async function updateOrderStatus(
 ): Promise<Order> {
   const timestampField = getTimestampField(newStatus);
 
-  const updates: any = { status: newStatus };
+  const updates: Record<string, any> = { status: newStatus };
   if (timestampField) {
     updates[timestampField] = new Date().toISOString();
   }
 
-  const { data, error } = await supabase
-    .from('orders')
+  const { data, error } = await (supabase
+    .from('orders') as any)
     .update(updates)
     .eq('id', orderId)
     .select()
@@ -95,8 +103,8 @@ export async function updateOrderStatus(
 }
 
 export async function cancelOrder(orderId: string, reason: string): Promise<Order> {
-  const { data, error } = await supabase
-    .from('orders')
+  const { data, error } = await (supabase
+    .from('orders') as any)
     .update({
       status: 'cancelled',
       cancelled_at: new Date().toISOString(),
@@ -121,12 +129,12 @@ function getTimestampField(status: OrderStatus): string | null {
   return map[status] || null;
 }
 
-export async function calculateQuote(loadSize: LoadSize, estimatedHours: number) {
-  const { data, error } = await supabase.rpc('calculate_pricing', {
+export async function calculateQuote(loadSize: LoadSize, estimatedHours: number): Promise<PricingResult> {
+  const { data, error } = await (supabase.rpc as any)('calculate_pricing', {
     p_load_size: loadSize,
     p_estimated_hours: estimatedHours
   }).single();
 
   if (error) throw error;
-  return data;
+  return data as PricingResult;
 }
