@@ -1,0 +1,18 @@
+{
+  "name": "@hauly/api",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hauly/types": "workspace:*",
+    "@supabase/supabase-js": "^2.47.12"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}
