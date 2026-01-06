@@ -1,0 +1,2 @@
+-- Seed data for Hauly database
+-- Add your seed data here
