@@ -10,12 +10,22 @@ interface Order {
   service_type: string;
   load_size: string;
   pickup_address_text: string;
+  pickup_instructions?: string;
+  dropoff_address_text?: string;
   scheduled_date: string;
   scheduled_time_start: string;
+  scheduled_time_end: string;
+  estimated_hours: number;
   total_cents: number;
   driver_payout_cents: number;
   platform_fee_cents: number;
+  tip_cents: number;
+  customer_notes?: string;
+  item_description?: string;
   created_at: string;
+  accepted_at?: string;
+  started_at?: string;
+  completed_at?: string;
   customer?: { id: string; full_name: string; email: string; phone: string };
   driver?: { id: string; full_name: string; phone: string };
 }
