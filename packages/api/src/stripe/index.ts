@@ -177,3 +177,6 @@ export async function createRefund(
 }
 
 export { stripe as stripeClient };
+
+// Connect (driver accounts)
+export * from './connect';
