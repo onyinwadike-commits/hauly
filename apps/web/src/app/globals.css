@@ -2,16 +2,43 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  scroll-behavior: smooth;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply antialiased text-charcoal bg-white;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display text-navy;
+  }
 }
 
-:root {
-  --color-navy: #1E3A5F;
-  --color-copper: #C27D4B;
-  --color-charcoal: #3D3D3D;
-  --color-light-gray: #F8F8F8;
-  --color-border-gray: #E5E5E5;
-  --color-error-red: #DC2626;
-  --color-success-green: #16A34A;
+@layer components {
+  .btn-primary {
+    @apply bg-copper text-white font-semibold px-6 py-3 rounded-lg
+           hover:bg-copper-600 transition-colors duration-200
+           focus:outline-none focus:ring-2 focus:ring-copper focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply bg-white text-navy font-semibold px-6 py-3 rounded-lg border-2 border-navy
+           hover:bg-navy hover:text-white transition-colors duration-200
+           focus:outline-none focus:ring-2 focus:ring-navy focus:ring-offset-2;
+  }
+
+  .btn-ghost {
+    @apply text-navy font-semibold px-6 py-3 rounded-lg
+           hover:bg-navy/5 transition-colors duration-200;
+  }
+
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-16 md:py-24;
+  }
+
+  .container-width {
+    @apply max-w-7xl mx-auto;
+  }
 }
