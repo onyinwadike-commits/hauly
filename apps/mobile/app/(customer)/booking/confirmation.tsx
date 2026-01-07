@@ -28,8 +28,8 @@ export default function ConfirmationScreen() {
           <Text className="text-navy font-bold mb-4">What happens next:</Text>
           <View className="space-y-3">
             {[
-              'We're matching you with a nearby Hauler',
-              'You'll get a notification when matched',
+              "We're matching you with a nearby Hauler",
+              "You'll get a notification when matched",
               'Your Hauler will arrive at scheduled time',
               'Before & after photos will be sent to you',
             ].map((step, i) => (
