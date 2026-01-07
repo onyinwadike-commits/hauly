@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Camera, CameraType } from 'expo-camera';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as Location from 'expo-location';
 import { supabase } from '../../../lib/supabase';
 
@@ -19,9 +19,9 @@ export default function PhotoCaptureScreen() {
     type: 'before' | 'after';
   }>();
   const router = useRouter();
-  const cameraRef = useRef<Camera>(null);
+  const cameraRef = useRef<CameraView>(null);
+  const [permission, requestPermission] = useCameraPermissions();
 
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [photos, setPhotos] = useState<string[]>([]);
   const [isCapturing, setIsCapturing] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -31,8 +31,6 @@ export default function PhotoCaptureScreen() {
 
   React.useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
       await Location.requestForegroundPermissionsAsync();
     })();
   }, []);
@@ -127,7 +125,7 @@ export default function PhotoCaptureScreen() {
     }
   }
 
-  if (hasPermission === null) {
+  if (!permission) {
     return (
       <SafeAreaView className="flex-1 bg-black items-center justify-center">
         <ActivityIndicator color="#FFFFFF" />
@@ -135,16 +133,22 @@ export default function PhotoCaptureScreen() {
     );
   }
 
-  if (hasPermission === false) {
+  if (!permission.granted) {
     return (
       <SafeAreaView className="flex-1 bg-white items-center justify-center px-6">
         <Text className="text-xl mb-4">📷</Text>
         <Text className="text-navy font-bold text-lg mb-2">
           Camera Access Required
         </Text>
-        <Text className="text-gray-500 text-center">
-          Please enable camera access in Settings to take job photos.
+        <Text className="text-gray-500 text-center mb-4">
+          Please enable camera access to take job photos.
         </Text>
+        <TouchableOpacity
+          className="bg-copper px-6 py-3 rounded-lg"
+          onPress={requestPermission}
+        >
+          <Text className="text-white font-semibold">Grant Permission</Text>
+        </TouchableOpacity>
       </SafeAreaView>
     );
   }
@@ -173,14 +177,14 @@ export default function PhotoCaptureScreen() {
 
       {/* Camera View */}
       <View className="flex-1 mx-4 my-2 rounded-xl overflow-hidden">
-        <Camera
+        <CameraView
           ref={cameraRef}
           style={{ flex: 1 }}
-          type={CameraType.back}
+          facing="back"
         >
           {/* Frame guides */}
           <View className="flex-1 border-2 border-dashed border-white/50 m-4 rounded-lg" />
-        </Camera>
+        </CameraView>
       </View>
 
       {/* Photo Thumbnails */}

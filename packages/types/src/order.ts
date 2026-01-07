@@ -16,6 +16,7 @@ export interface Order {
   pickup_longitude: number;
   pickup_instructions: string | null;
   pickup_gate_code: string | null;
+  unit_number: string | null;
 
   // Dropoff (null for junk removal)
   dropoff_address_id: string | null;
