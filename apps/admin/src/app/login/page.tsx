@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -10,38 +9,22 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
+    // Demo login - in production, this would use Supabase auth
     try {
-      const { error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      if (authError) throw authError;
-
-      // Verify admin role
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from('users')
-          .select('role')
-          .eq('id', user.id)
-          .single();
-
-        if (profile?.role !== 'admin') {
-          await supabase.auth.signOut();
-          throw new Error('Access denied. Admin privileges required.');
-        }
+      if (email === 'admin@hauly.app' && password === 'admin123') {
+        router.push('/');
+      } else {
+        throw new Error('Invalid email or password');
       }
-
-      router.push('/');
-      router.refresh();
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -50,18 +33,18 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-navy flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#1E3A5F] flex items-center justify-center px-4">
       <div className="bg-white rounded-xl p-8 w-full max-w-md shadow-2xl">
         {/* Logo */}
         <div className="flex items-center justify-center mb-8">
           <div className="flex">
-            <div className="w-8 h-7 bg-copper rounded-sm mr-1" />
-            <div className="w-8 h-7 bg-copper rounded-sm" />
+            <div className="w-8 h-7 bg-[#B87333] rounded-sm mr-1" />
+            <div className="w-8 h-7 bg-[#B87333] rounded-sm" />
           </div>
-          <span className="text-navy font-bold text-2xl ml-3">HAULY</span>
+          <span className="text-[#1E3A5F] font-bold text-2xl ml-3">HAULY</span>
         </div>
 
-        <h1 className="text-2xl font-bold text-navy text-center mb-2">
+        <h1 className="text-2xl font-bold text-[#1E3A5F] text-center mb-2">
           Admin Dashboard
         </h1>
         <p className="text-gray-500 text-center mb-8">
@@ -76,28 +59,28 @@ export default function LoginPage() {
 
         <form onSubmit={handleLogin}>
           <div className="mb-4">
-            <label className="block text-charcoal text-sm font-medium mb-2">
+            <label className="block text-gray-700 text-sm font-medium mb-2">
               Email
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-border-gray rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-copper"
+              className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#B87333]"
               placeholder="admin@hauly.app"
               required
             />
           </div>
 
           <div className="mb-6">
-            <label className="block text-charcoal text-sm font-medium mb-2">
+            <label className="block text-gray-700 text-sm font-medium mb-2">
               Password
             </label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-border-gray rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-copper"
+              className="w-full border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#B87333]"
               placeholder="••••••••"
               required
             />
@@ -107,14 +90,20 @@ export default function LoginPage() {
             type="submit"
             disabled={isLoading}
             className={`w-full py-3 rounded-lg font-semibold text-white transition ${
-              isLoading ? 'bg-gray-400' : 'bg-copper hover:bg-copper/90'
+              isLoading ? 'bg-gray-400' : 'bg-[#B87333] hover:bg-[#9A5F28]'
             }`}
           >
             {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
-        <p className="text-center text-gray-400 text-sm mt-8">
+        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+          <p className="text-xs text-gray-500 text-center">
+            Demo credentials: admin@hauly.app / admin123
+          </p>
+        </div>
+
+        <p className="text-center text-gray-400 text-sm mt-6">
           Hauly Admin Portal v1.0
         </p>
       </div>
