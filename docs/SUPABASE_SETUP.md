@@ -119,20 +119,48 @@ Verify buckets in **Storage** section of dashboard.
 
 ## 7. Set Up Edge Functions
 
-Deploy the Stripe webhook handler:
+Hauly uses the following Edge Functions:
+
+| Function | Description |
+|----------|-------------|
+| `stripe-webhook` | Handle Stripe payment events |
+| `send-notification` | Send SMS (Twilio) and push (OneSignal) notifications |
+| `match-driver` | Auto-match drivers to orders using PostGIS |
+| `generate-invoice` | Generate and email PDF invoices |
+
+### Deploy All Functions
 
 ```bash
-# Deploy function
-supabase functions deploy stripe-webhook
-
-# Set secrets
-supabase secrets set STRIPE_SECRET_KEY=sk_live_...
-supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_...
+# Deploy all functions
+supabase functions deploy stripe-webhook --project-ref YOUR_PROJECT_REF
+supabase functions deploy send-notification --project-ref YOUR_PROJECT_REF
+supabase functions deploy match-driver --project-ref YOUR_PROJECT_REF
+supabase functions deploy generate-invoice --project-ref YOUR_PROJECT_REF
 ```
 
-Get the function URL for Stripe webhook endpoint:
+### Set Function Secrets
+
+```bash
+supabase secrets set --project-ref YOUR_PROJECT_REF \
+  STRIPE_SECRET_KEY=sk_live_... \
+  STRIPE_WEBHOOK_SECRET=whsec_... \
+  TWILIO_ACCOUNT_SID=AC... \
+  TWILIO_AUTH_TOKEN=... \
+  TWILIO_PHONE_NUMBER=+1... \
+  ONESIGNAL_APP_ID=... \
+  ONESIGNAL_API_KEY=... \
+  RESEND_API_KEY=re_... \
+  FROM_EMAIL="Hauly <noreply@hauly.app>"
+```
+
+### Function URLs
+
+After deployment, functions are available at:
 ```
 https://[PROJECT_REF].supabase.co/functions/v1/stripe-webhook
+https://[PROJECT_REF].supabase.co/functions/v1/send-notification
+https://[PROJECT_REF].supabase.co/functions/v1/match-driver
+https://[PROJECT_REF].supabase.co/functions/v1/generate-invoice
 ```
 
 ## 8. Configure Stripe Webhook
