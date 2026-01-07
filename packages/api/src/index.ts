@@ -25,3 +25,6 @@ export * from './stripe';
 
 // Realtime
 export * from './realtime';
+
+// Notifications
+export * from './notifications';
