@@ -79,7 +79,13 @@
           "mode": "production"
         }
       ],
-      "@stripe/stripe-react-native",
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.hauly.app",
+          "enableGooglePay": true
+        }
+      ],
       [
         "@sentry/react-native/expo",
         {
