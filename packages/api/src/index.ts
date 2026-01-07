@@ -31,3 +31,6 @@ export * from './notifications';
 
 // Maps
 export * from './maps';
+
+// Matching
+export * from './matching';
