@@ -28,3 +28,6 @@ export * from './realtime';
 
 // Notifications
 export * from './notifications';
+
+// Maps
+export * from './maps';
