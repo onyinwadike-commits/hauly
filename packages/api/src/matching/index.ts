@@ -30,7 +30,7 @@ interface MatchingCriteria {
 }
 
 // Matching weights
-const WEIGHTS = {
+export const WEIGHTS = {
   distance: 0.35,      // Closer is better
   rating: 0.25,        // Higher rating is better
   experience: 0.15,    // More jobs is better
@@ -39,7 +39,7 @@ const WEIGHTS = {
 };
 
 // Tier scores
-const TIER_SCORES: Record<string, number> = {
+export const TIER_SCORES: Record<string, number> = {
   platinum: 100,
   gold: 75,
   silver: 50,
@@ -47,7 +47,7 @@ const TIER_SCORES: Record<string, number> = {
 };
 
 // Vehicle type requirements
-const VEHICLE_REQUIREMENTS: Record<string, string[]> = {
+export const VEHICLE_REQUIREMENTS: Record<string, string[]> = {
   light: ['pickup_truck', 'cargo_van', 'box_truck'],
   medium: ['cargo_van', 'box_truck'],
   heavy: ['box_truck'],
