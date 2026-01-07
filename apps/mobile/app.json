@@ -79,7 +79,14 @@
           "mode": "production"
         }
       ],
-      "@stripe/stripe-react-native"
+      "@stripe/stripe-react-native",
+      [
+        "@sentry/react-native/expo",
+        {
+          "organization": "hauly",
+          "project": "hauly-mobile"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
