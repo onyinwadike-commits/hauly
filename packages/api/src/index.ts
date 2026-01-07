@@ -20,5 +20,8 @@ export * from './photos';
 // Payments
 export * from './payments';
 
+// Stripe
+export * from './stripe';
+
 // Realtime
 export * from './realtime';
