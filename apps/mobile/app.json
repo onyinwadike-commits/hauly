@@ -16,23 +16,40 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.hauly.app",
+      "buildNumber": "1",
+      "config": {
+        "googleMapsApiKey": "YOUR_IOS_GOOGLE_MAPS_KEY"
+      },
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Hauly needs your location to find nearby drivers and track deliveries.",
         "NSLocationAlwaysUsageDescription": "Hauly needs background location to track active jobs.",
-        "NSCameraUsageDescription": "Hauly needs camera access to take before and after photos of jobs."
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Hauly needs your location to track active jobs and provide accurate ETAs.",
+        "NSCameraUsageDescription": "Hauly needs camera access to take before and after photos of jobs.",
+        "NSPhotoLibraryUsageDescription": "Hauly needs photo library access to upload job photos.",
+        "UIBackgroundModes": ["location", "fetch", "remote-notification"]
       }
     },
     "android": {
+      "package": "com.hauly.app",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1E3A5F"
       },
-      "package": "com.hauly.app",
+      "config": {
+        "googleMaps": {
+          "apiKey": "YOUR_ANDROID_GOOGLE_MAPS_KEY"
+        }
+      },
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
         "ACCESS_BACKGROUND_LOCATION",
-        "CAMERA"
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE"
       ]
     },
     "plugins": [
@@ -40,7 +57,8 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Hauly needs your location to track active jobs."
+          "locationAlwaysAndWhenInUsePermission": "Hauly needs your location to track active jobs.",
+          "isAndroidBackgroundLocationEnabled": true
         }
       ],
       [
@@ -48,10 +66,35 @@
         {
           "cameraPermission": "Hauly needs camera access to document jobs with photos."
         }
-      ]
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Hauly needs access to your photos to upload job images."
+        }
+      ],
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "production"
+        }
+      ],
+      "@stripe/stripe-react-native"
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "your-eas-project-id"
+      }
+    },
+    "owner": "hauly",
+    "updates": {
+      "url": "https://u.expo.dev/your-eas-project-id"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }
