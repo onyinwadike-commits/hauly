@@ -7,7 +7,7 @@ module.exports = function (api) {
     ],
     plugins: [
       // react-native-reanimated/plugin must be last
-      'react-native-reanimated/plugin',
+      ['react-native-reanimated/plugin', { disableInlineStylesWarning: true }],
     ],
   };
 };
